@@ -1,0 +1,28 @@
+# Example 1
+# Filter file1.tdl so that only lines where the first column has a match in the second column of file2.tdl
+awk -f ../merge_tables.awk -v reffile=file2.tdl -v refcolumn=2 file1.tdl
+
+# Example 2
+# Merge file1.tdl and file2.tdl to give a file with concatenated values for the matching rows (matched as in Example 1) 
+awk -f ../merge_tables.awk -v reffile=file2.tdl -v refcolumn=2 -v both=1 file1.tdl
+
+# Example 3
+# As Example 2 but also output the lines that don't have a match (these will be shorter)
+awk -f ../merge_tables.awk -v reffile=file2.tdl -v refcolumn=2 -v both=1 -v filter=-1 file1.tdl
+
+# Example 4
+# Create a tab-delimited file by taking all the matching rows from file1.tdl file3.tdl and file4.tdl
+#        and  use the values found in column 2
+awk -f ../make_table_from_files.awk file1.tdl file3.tdl file4.tdl 
+
+# Example 5
+# Translate the keys (in the first column) of file1.tdl using the mapping found in file5.tdl
+awk -f ../translate_column.awk -v reffile=file5.tdl file1.tdl
+
+# Example 6
+# Translate the keys as in Example 5 and then use the output to merge with file6.tdl
+awk -f ../translate_column.awk -v reffile=file5.tdl file1.tdl | awk -f ../merge_tables.awk -v both=1 -v reffile=file6.tdl
+
+# Example 7
+# Merge as in Example 2 but then remove the 'rec' column and the duplicate id column 
+awk -f ../merge_tables.awk -v reffile=file2.tdl -v refcolumn=2 -v both=1 file1.tdl | awk -f ../remove_column.awk -v column=6 | awk -f ../remove_column.awk -v column=6
